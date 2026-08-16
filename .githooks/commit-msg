@@ -1,0 +1,33 @@
+#!/bin/sh
+# DSHLauncher commit-msg hook — Conventional Commits 格式校验
+# 由 git 在提交时调用：参数 $1 = 提交信息文件路径
+# 规则：type(scope)!?: 英文主题（正文可中文）
+
+MSG_FILE="$1"
+if [ ! -f "$MSG_FILE" ]; then
+  exit 0
+fi
+
+SUBJECT=$(sed -n '1p' "$MSG_FILE")
+
+# 跳过 merge / revert 自动提交
+case "$SUBJECT" in
+  Merge*|Revert*) exit 0 ;;
+esac
+
+# 格式校验: type(scope)?!?: subject
+if ! echo "$SUBJECT" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?!?: .+'; then
+  echo "✗ commit-msg hook: 提交信息不符合 Conventional Commits 格式" >&2
+  echo "  格式: type(scope): subject" >&2
+  echo "  示例: feat(icon): Add solid silhouette for small sizes" >&2
+  echo "  type 可选: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert" >&2
+  exit 1
+fi
+
+# 主题（第一行）必须是英文（ASCII）
+if echo "$SUBJECT" | LC_ALL=C grep -q '[^ -~]'; then
+  echo "✗ commit-msg hook: 主题（第一行）请使用英文，中文说明请放正文" >&2
+  exit 1
+fi
+
+exit 0

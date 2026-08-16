@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PowerShell 语法检查（所有 .ps1）
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bad = @()
+          Get-ChildItem -Recurse -Filter *.ps1 | ForEach-Object {
+            $t = $null; $e = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$t, [ref]$e) | Out-Null
+            if ($e.Count -gt 0) { $bad += "$($_.Name): $($e[0].Message)" }
+          }
+          if ($bad.Count -gt 0) { $bad | ForEach-Object { Write-Error $_ }; exit 1 }
+          Write-Host "✓ $((Get-ChildItem -Recurse -Filter *.ps1).Count) 个 .ps1 语法全部通过"
+
+      - name: JSON 配置校验
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Get-ChildItem -Filter *.json | ForEach-Object {
+            try { Get-Content $_.FullName -Raw | ConvertFrom-Json | Out-Null }
+            catch { Write-Error "JSON 无效: $($_.Name)"; exit 1 }
+          }
+          Write-Host "✓ JSON 配置合法"
+
+      - name: 自检冒烟（-TestOnly）
+        shell: powershell
+        run: |
+          & "$env:GITHUB_WORKSPACE\dsh-launcher.ps1" -TestOnly -NoBrowser
+          if ($LASTEXITCODE -ne 0) { exit 1 }

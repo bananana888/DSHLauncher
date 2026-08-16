@@ -1,0 +1,23 @@
+# 换行规范（多人协作关键：Windows 开发者 CRLF 会自动被 git 规范化）
+
+# 默认：文本文件入库前转 LF
+* text=auto
+
+# PowerShell 脚本：显式 CRLF（Windows 原生 + BOM 兼容）
+*.ps1 text eol=crlf
+
+# shell 脚本（git hooks）：必须 LF，CRLF 会破坏 shebang 与命令执行
+*.sh text eol=lf
+.githooks/commit-msg text eol=lf
+.githooks/pre-commit text eol=lf
+
+# YAML / Markdown / JSON / 配置：LF
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+
+# 二进制/图标：不转换
+*.ico binary
+*.png binary
+*.zip binary

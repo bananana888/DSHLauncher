@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 打包发布物
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME
+          $items = @(
+            'dsh-launcher.ps1','install.ps1','config.example.json',
+            'README.md','LICENSE','CONTRIBUTING.md','CHANGELOG.md',
+            'assets','tools','.githooks'
+          )
+          Compress-Archive -Path $items -DestinationPath "dsh-launcher-$version.zip" -Force
+          Write-Host "打包完成: dsh-launcher-$version.zip"
+
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dsh-launcher-*.zip
+          generate_release_notes: true

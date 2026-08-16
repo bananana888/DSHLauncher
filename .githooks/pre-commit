@@ -1,0 +1,8 @@
+#!/bin/sh
+# DSHLauncher pre-commit hook — 校验暂存区 .ps1 语法与 .json 合法性
+# 实际检查逻辑在 pre-commit-check.ps1（powershell.exe 执行，保证编码兼容）
+
+DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$DIR/pre-commit-check.ps1"
+exit $?

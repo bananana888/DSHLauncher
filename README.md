@@ -135,6 +135,15 @@ A: 这是 WT 对 `settings.json` 的两条严格校验，install.ps1 已内置�
 - `opacity` 是 **0–100 的百分比整数**（如 `92`），不能写 `0.92`（且避免浮点序列化噪音）
 若仍报错，可回滚安装器自动生成的备份：`settings.json.dsh-bak-*`（在 WT 的 `LocalState` 目录），改完重跑 `.\install.ps1` 即可。
 
+## 🤝 贡献
+
+欢迎参与！请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，要点：
+
+- **提交格式**：Conventional Commits（`feat(scope): 英文主题`，正文可中文）
+- **启用 hooks**：clone 后跑一次 `.\githooks\setup-hooks.ps1`（自动校验提交格式 + PS 语法）
+- **协作流程**：main 受保护，改动走 PR（模板见 `.github/PULL_REQUEST_TEMPLATE.md`）
+- **发布**：重大改动打 `vX.Y.Z` 标签，Actions 自动出 Release
+
 ## 📜 许可
 
 [MIT](LICENSE)。鲸鱼图标提取自 DeepSeek 官网 favicon，仅用于个人/工具用途；发布前请自行确认素材合规性。
