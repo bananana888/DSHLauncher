@@ -1,0 +1,17 @@
+{
+  "port": 3080,
+  "url": "http://127.0.0.1:3080",
+  "timeoutSeconds": 60,
+  "autoOpenBrowser": true,
+  "workingDirectory": "",
+  "colors": {
+    "primary": "#4D6BFE",
+    "light": "#8FA3FF",
+    "text": "#E2E8F0",
+    "dim": "#64748B",
+    "background": "#0B1220",
+    "success": "#22C55E",
+    "error": "#EF4444",
+    "warning": "#F59E0B"
+  }
+}
